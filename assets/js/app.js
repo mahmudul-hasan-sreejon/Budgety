@@ -66,7 +66,7 @@ let UIController = (function() {
             return {
                 type: document.querySelector(DOMstrings.inputType).value,
                 description: document.querySelector(DOMstrings.inputDescription).value,
-                value: document.querySelector(DOMstrings.inputValue).value
+                value: parseFloat(document.querySelector(DOMstrings.inputValue).value)
             };
         },
 
@@ -137,8 +137,17 @@ let UIController = (function() {
 })();
 
 
+
 // Global App Controller
 let controller = (function(budgetCtrl, UICtrl) {
+
+    let updateBudget = function() {
+        // calculate the budget
+
+        // return the budget
+
+        // display the budget on the UI
+    }
 
     let ctrtAddItem = function() {
         let input, newItem;
@@ -155,9 +164,8 @@ let controller = (function(budgetCtrl, UICtrl) {
         // clear the fields
         UICtrl.clearFields();
 
-        // calculate the budget
-
-        // display the budget on the UI
+        // calculate and update budget
+        updateBudget();
     };
 
     let setupEventListeners = function() {
