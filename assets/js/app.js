@@ -155,17 +155,20 @@ let controller = (function(budgetCtrl, UICtrl) {
         // get the field input data
         input = UICtrl.getInput();
 
-        // add the item to the budget controller
-        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+        if(input.description && input.value) {
+            // add the item to the budget controller
+            newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        // add the item to the UI
-        UICtrl.addListItem(newItem, input.type);
+            // add the item to the UI
+            UICtrl.addListItem(newItem, input.type);
 
-        // clear the fields
-        UICtrl.clearFields();
+            // clear the fields
+            UICtrl.clearFields();
 
-        // calculate and update budget
-        updateBudget();
+            // calculate and update budget
+            updateBudget();
+        }
+        else console.log("Validation error!!!");
     };
 
     let setupEventListeners = function() {
