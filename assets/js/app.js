@@ -32,8 +32,6 @@ let budgetController = (function() {
             if(data.allItems[type].length === 0) id = 0;
             else id = data.allItems[type][data.allItems[type].length - 1].id + 1;
 
-            console.log(`id: ${id}`);
-
             if(type === 'exp') {
                 newItem = new Expense(id, description, value);
             }
@@ -57,7 +55,9 @@ let UIController = (function() {
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
-        inputBtn: '.add__btn'
+        inputBtn: '.add__btn',
+        incomeContainer: '.income__list',
+        expensesContainer: '.expenses__list',
     };
 
     return {
@@ -68,6 +68,46 @@ let UIController = (function() {
                 value: document.querySelector(DOMstrings.inputValue).value
             };
             
+        },
+
+        addListItem: function(obj, type) {
+            let page, element;
+
+            if(type === 'inc') {
+                element = DOMstrings.incomeContainer;
+                page =
+                `<div class="item clearfix" id="income-%id%">
+                    <div class="item__description">%description%</div>
+                    <div class="right clearfix">
+                        <div class="item__value">+ %value%</div>
+                        <div class="item__delete">
+                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            else if(type === 'exp') {
+                element = DOMstrings.expensesContainer;
+                page =
+                `<div class="item clearfix" id="expense-%id%">
+                    <div class="item__description">%description%</div>
+                    <div class="right clearfix">
+                        <div class="item__value">- %value%</div>
+                        <div class="item__percentage">21%</div>
+                        <div class="item__delete">
+                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            page = page.replace('%id%', obj.id);
+            page = page.replace('%description%', obj.description);
+            page = page.replace('%value%', obj.value);
+
+            document.querySelector(element).insertAdjacentHTML('beforeend', page);
+
+            // return 'return something';
         },
 
         getDOMstrings: function() {
@@ -82,13 +122,15 @@ let UIController = (function() {
 let controller = (function(budgetCtrl, UICtrl) {
 
     let ctrtAddItem = function() {
-        let input, newItem;
+        let input, newItem, listItem;
         
         input = UICtrl.getInput();
 
         newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        console.log(newItem);
+        listItem = UICtrl.addListItem(newItem, input.type);
+
+        // console.log(listItem);
     };
 
     let setupEventListeners = function() {
