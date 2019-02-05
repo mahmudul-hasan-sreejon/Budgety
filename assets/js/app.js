@@ -25,6 +25,28 @@ let budgetController = (function() {
         }
     };
 
+    return {
+        addItem: function(type, description, value) {
+            let newItem, id;
+
+            if(data.allItems[type].length === 0) id = 0;
+            else id = data.allItems[type][data.allItems[type].length - 1].id + 1;
+
+            console.log(`id: ${id}`);
+
+            if(type === 'exp') {
+                newItem = new Expense(id, description, value);
+            }
+            else if(type === 'inc') {
+                newItem = new Income(id, description, value);
+            }
+            
+            data.allItems[type].push(newItem);
+
+            return newItem;
+        }
+    };
+
 })();
 
 
@@ -59,6 +81,16 @@ let UIController = (function() {
 // Global App Controller
 let controller = (function(budgetCtrl, UICtrl) {
 
+    let ctrtAddItem = function() {
+        let input, newItem;
+        
+        input = UICtrl.getInput();
+
+        newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+
+        console.log(newItem);
+    };
+
     let setupEventListeners = function() {
         let DOM = UICtrl.getDOMstrings();
 
@@ -70,10 +102,6 @@ let controller = (function(budgetCtrl, UICtrl) {
     
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrtAddItem);
     }
-
-    let ctrtAddItem = function() {
-        let inputs = UICtrl.getInput();
-    };
 
     return {
         init: function() {
