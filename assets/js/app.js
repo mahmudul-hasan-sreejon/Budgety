@@ -14,6 +14,7 @@ let budgetController = (function() {
         this.value = value;
     }
 
+    // storage for current user data
     let data = {
         allItems: {
             exp: [],
@@ -29,16 +30,15 @@ let budgetController = (function() {
         addItem: function(type, description, value) {
             let newItem, id;
 
+            // generate transaction id
             if(data.allItems[type].length === 0) id = 0;
             else id = data.allItems[type][data.allItems[type].length - 1].id + 1;
 
-            if(type === 'exp') {
-                newItem = new Expense(id, description, value);
-            }
-            else if(type === 'inc') {
-                newItem = new Income(id, description, value);
-            }
+            // create new transaction
+            if(type === 'exp') newItem = new Expense(id, description, value);
+            else if(type === 'inc') newItem = new Income(id, description, value);
             
+            // store new transaction
             data.allItems[type].push(newItem);
 
             return newItem;
@@ -51,6 +51,7 @@ let budgetController = (function() {
 // UI Controller
 let UIController = (function() {
 
+    // storage for class / id names
     let DOMstrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
@@ -67,12 +68,12 @@ let UIController = (function() {
                 description: document.querySelector(DOMstrings.inputDescription).value,
                 value: document.querySelector(DOMstrings.inputValue).value
             };
-            
         },
 
         addListItem: function(obj, type) {
             let page, element;
 
+            // prepare page html for render
             if(type === 'inc') {
                 element = DOMstrings.incomeContainer;
                 page =
@@ -101,13 +102,31 @@ let UIController = (function() {
                 </div>`;
             }
 
+            // replace id, description and value from the page
             page = page.replace('%id%', obj.id);
             page = page.replace('%description%', obj.description);
             page = page.replace('%value%', obj.value);
 
+            // insert page as the last element
             document.querySelector(element).insertAdjacentHTML('beforeend', page);
+        },
 
-            // return 'return something';
+        clearFields: function() {
+            let fields, fieldsArr;
+            
+            // select DOM of input description and value field
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+
+            // convert `fields` list to an array
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            // clear every input fields
+            fieldsArr.forEach(element => {
+                element.value = "";
+            });
+
+            // focus on the description input field
+            fieldsArr[0].focus();
         },
 
         getDOMstrings: function() {
@@ -122,26 +141,36 @@ let UIController = (function() {
 let controller = (function(budgetCtrl, UICtrl) {
 
     let ctrtAddItem = function() {
-        let input, newItem, listItem;
+        let input, newItem;
         
+        // get the field input data
         input = UICtrl.getInput();
 
+        // add the item to the budget controller
         newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-        listItem = UICtrl.addListItem(newItem, input.type);
+        // add the item to the UI
+        UICtrl.addListItem(newItem, input.type);
 
-        // console.log(listItem);
+        // clear the fields
+        UICtrl.clearFields();
+
+        // calculate the budget
+
+        // display the budget on the UI
     };
 
     let setupEventListeners = function() {
         let DOM = UICtrl.getDOMstrings();
 
+        // event listener for 'return' key press
         document.addEventListener('keypress', function(e) {
             if(e.keyCode === 13 || e.which === 13) {
                 ctrtAddItem();
             }
         });
-    
+        
+        // event listener for button click
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrtAddItem);
     }
 
@@ -154,4 +183,5 @@ let controller = (function(budgetCtrl, UICtrl) {
 
 })(budgetController, UIController);
 
+// initialize app at startup
 controller.init();
