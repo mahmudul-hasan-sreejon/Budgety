@@ -64,8 +64,8 @@ let budgetController = (function() {
             data.budget = data.totals.inc - data.totals.exp;
 
             // calculate the % of income that we spent
-            if(data.totals.inc <= 0) data.percentage = -1;
-            else data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            if(data.totals.inc > 0) data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            else data.percentage = -1;
         },
 
         getBudget: function() {
@@ -170,7 +170,9 @@ let UIController = (function() {
             document.querySelector(DOMstrings.budgetLable).textContent = obj.budget;
             document.querySelector(DOMstrings.incomeLable).textContent = obj.totalInc;
             document.querySelector(DOMstrings.expensesLable).textContent = obj.totalExp;
-            document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage;
+
+            if(obj.percentage > 0) document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage + "%";
+            else document.querySelector(DOMstrings.percentageLable).textContent = '---';
         },
 
         getDOMstrings: function() {
@@ -194,7 +196,7 @@ let controller = (function(budgetCtrl, UICtrl) {
 
         // display the budget on the UI
         UICtrl.displayBudget(budget);
-    }
+    };
 
     let ctrtAddItem = function() {
         let input, newItem;
@@ -230,11 +232,20 @@ let controller = (function(budgetCtrl, UICtrl) {
         
         // event listener for button click
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrtAddItem);
-    }
+    };
 
     return {
         init: function() {
             console.log('Application has started...');
+
+            // reset data
+            UICtrl.displayBudget({
+                budget: 0,
+                totalInc: 0,
+                totalExp: 0,
+                percentage: -1
+            });
+
             setupEventListeners();
         }
     };
