@@ -64,7 +64,17 @@ let budgetController = (function() {
             data.budget = data.totals.inc - data.totals.exp;
 
             // calculate the % of income that we spent
-            data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+            if(data.totals.inc <= 0) data.percentage = -1;
+            else data.percentage = Math.round((data.totals.exp / data.totals.inc) * 100);
+        },
+
+        getBudget: function() {
+            return {
+                budget: data.budget,
+                totalInc: data.totals.inc,
+                totalExp: data.totals.exp,
+                percentage: data.percentage
+            };
         }
     };
 
@@ -82,6 +92,10 @@ let UIController = (function() {
         inputBtn: '.add__btn',
         incomeContainer: '.income__list',
         expensesContainer: '.expenses__list',
+        budgetLable: '.budget__value',
+        incomeLable: '.budget__income--value',
+        expensesLable: '.budget__expenses--value',
+        percentageLable: '.budget__expenses--percentage'
     };
 
     return {
@@ -152,6 +166,13 @@ let UIController = (function() {
             fieldsArr[0].focus();
         },
 
+        displayBudget: function(obj) {
+            document.querySelector(DOMstrings.budgetLable).textContent = obj.budget;
+            document.querySelector(DOMstrings.incomeLable).textContent = obj.totalInc;
+            document.querySelector(DOMstrings.expensesLable).textContent = obj.totalExp;
+            document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage;
+        },
+
         getDOMstrings: function() {
             return DOMstrings;
         }
@@ -167,9 +188,12 @@ let controller = (function(budgetCtrl, UICtrl) {
     let updateBudget = function() {
         // calculate the budget
         budgetCtrl.calculateBudget();
+
         // return the budget
+        let budget = budgetCtrl.getBudget();
 
         // display the budget on the UI
+        UICtrl.displayBudget(budget);
     }
 
     let ctrtAddItem = function() {
