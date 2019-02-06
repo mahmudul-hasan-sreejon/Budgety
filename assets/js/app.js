@@ -95,7 +95,8 @@ let UIController = (function() {
         budgetLable: '.budget__value',
         incomeLable: '.budget__income--value',
         expensesLable: '.budget__expenses--value',
-        percentageLable: '.budget__expenses--percentage'
+        percentageLable: '.budget__expenses--percentage',
+        container: '.container'
     };
 
     return {
@@ -114,7 +115,7 @@ let UIController = (function() {
             if(type === 'inc') {
                 element = DOMstrings.incomeContainer;
                 page =
-                `<div class="item clearfix" id="income-%id%">
+                `<div class="item clearfix" id="inc-%id%">
                     <div class="item__description">%description%</div>
                     <div class="right clearfix">
                         <div class="item__value">+ %value%</div>
@@ -127,7 +128,7 @@ let UIController = (function() {
             else if(type === 'exp') {
                 element = DOMstrings.expensesContainer;
                 page =
-                `<div class="item clearfix" id="expense-%id%">
+                `<div class="item clearfix" id="exp-%id%">
                     <div class="item__description">%description%</div>
                     <div class="right clearfix">
                         <div class="item__value">- %value%</div>
@@ -220,18 +221,41 @@ let controller = (function(budgetCtrl, UICtrl) {
         else console.log("Validation error!!!");
     };
 
+    let ctrlDeleteItem = function(e) {
+        let itemId, type, id;
+
+        // find target element's parent element
+        itemId = e.target.parentNode.parentNode.parentNode.id;
+
+        if(itemId) {
+            // split element name into sub string
+            itemId = itemId.split('-');
+
+            type = itemId[0];
+            id = parseInt(itemId[1]);
+
+            // delete the item from data storage
+
+            // delete the item from the UI
+
+            // update and show the new budget
+        }
+    };
+
     let setupEventListeners = function() {
         let DOM = UICtrl.getDOMstrings();
 
-        // event listener for 'return' key press
+        // event listener for adding items
         document.addEventListener('keypress', function(e) {
             if(e.keyCode === 13 || e.which === 13) {
                 ctrtAddItem();
             }
         });
         
-        // event listener for button click
         document.querySelector(DOM.inputBtn).addEventListener('click', ctrtAddItem);
+
+        // event listener for deleting items
+        document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
     };
 
     return {
@@ -252,5 +276,5 @@ let controller = (function(budgetCtrl, UICtrl) {
 
 })(budgetController, UIController);
 
-// initialize app at startup
+// start app
 controller.init();
