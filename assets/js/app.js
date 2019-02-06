@@ -14,6 +14,15 @@ let budgetController = (function() {
         this.value = value;
     }
 
+    let calculateTotal = function(type) {
+        let sum = 0;
+        data.allItems[type].forEach(element => {
+            sum += element.value;
+        });
+
+        data.totals[type] = sum;
+    };
+
     // storage for current user data
     let data = {
         allItems: {
@@ -42,6 +51,16 @@ let budgetController = (function() {
             data.allItems[type].push(newItem);
 
             return newItem;
+        },
+
+        calculateBudget: function() {
+            // calculate total income and expense
+            calculateTotal('inc');
+            calculateTotal('exp');
+
+            // calculate the budget: income - expense
+
+            // calculate the % of income that we spent
         }
     };
 
@@ -143,7 +162,7 @@ let controller = (function(budgetCtrl, UICtrl) {
 
     let updateBudget = function() {
         // calculate the budget
-
+        budgetCtrl.calculateBudget();
         // return the budget
 
         // display the budget on the UI
