@@ -6,7 +6,17 @@ let budgetController = (function() {
         this.id = id;
         this.description = description;
         this.value = value;
+        this.percentage = -1;
     }
+
+    Expense.prototype.calcPercentage = function(totalIncome) {
+        if(totalIncome > 0) this.percentage = Math.round((this.value / totalIncome) * 100);
+        else this.percentage = -1;
+    };
+
+    Expense.prototype.gerPercentage = function() {
+        return this.percentage;
+    };
 
     function Income(id, description, value) {
         this.id = id;
@@ -84,6 +94,22 @@ let budgetController = (function() {
             else data.percentage = -1;
         },
 
+        calculatePercentages: function() {
+            data.allItems.exp.forEach(current => {
+                current.calcPercentage(data.totals.inc);
+            });
+        },
+
+        getPercentages: function() {
+            let percentages;
+
+            percentages = data.allItems.exp.map(current => {
+                return current.gerPercentage();
+            });
+            
+            return percentages;
+        },
+
         getBudget: function() {
             return {
                 budget: data.budget,
@@ -95,6 +121,7 @@ let budgetController = (function() {
     };
 
 })();
+
 
 
 // UI Controller
@@ -223,6 +250,16 @@ let controller = (function(budgetCtrl, UICtrl) {
         UICtrl.displayBudget(budget);
     };
 
+    let updatePercentages = function() {
+        // calculate percentages
+        budgetCtrl.calculatePercentages();
+
+        // read percentages from budget controller
+        let percentages = budgetCtrl.getPercentages();
+
+        // update percentages from budget and UI
+    };
+
     let ctrtAddItem = function() {
         let input, newItem;
         
@@ -241,6 +278,9 @@ let controller = (function(budgetCtrl, UICtrl) {
 
             // calculate and update budget
             updateBudget();
+
+            // calculate and update percentages
+            updatePercentages();
         }
         else console.log("Validation error!!!");
     };
@@ -266,6 +306,9 @@ let controller = (function(budgetCtrl, UICtrl) {
 
             // update and show the new budget
             updateBudget();
+
+            // calculate and update percentages
+            updatePercentages();
         }
     };
 
