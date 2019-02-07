@@ -55,6 +55,22 @@ let budgetController = (function() {
             return newItem;
         },
 
+        deleteItem: function(type, id) {
+            let index;
+
+            // find the index of the delete item from data storage
+            index = -1;
+            for(let i = 0; i < data.allItems[type].length; ++i) {
+                if(data.allItems[type][i].id === id) {
+                    index = i;
+                    break;
+                }
+            }
+
+            // delete item if found
+            if(index !== -1) data.allItems[type].splice(index, 1);
+        },
+
         calculateBudget: function() {
             // calculate total income and expense
             calculateTotal('inc');
@@ -149,6 +165,14 @@ let UIController = (function() {
             document.querySelector(element).insertAdjacentHTML('beforeend', page);
         },
 
+        deleteListItem: function(selectorId) {
+            let element;
+
+            // remove the child element
+            element = document.getElementById(selectorId);
+            element.parentNode.removeChild(element);
+        },
+
         clearFields: function() {
             let fields, fieldsArr;
             
@@ -222,23 +246,26 @@ let controller = (function(budgetCtrl, UICtrl) {
     };
 
     let ctrlDeleteItem = function(e) {
-        let itemId, type, id;
+        let itemId, type, id, temp;
 
         // find target element's parent element
         itemId = e.target.parentNode.parentNode.parentNode.id;
 
         if(itemId) {
             // split element name into sub string
-            itemId = itemId.split('-');
+            temp = itemId.split('-');
 
-            type = itemId[0];
-            id = parseInt(itemId[1]);
+            type = temp[0];
+            id = parseInt(temp[1]);
 
             // delete the item from data storage
+            budgetCtrl.deleteItem(type, id);
 
             // delete the item from the UI
+            UICtrl.deleteListItem(itemId);
 
             // update and show the new budget
+            updateBudget();
         }
     };
 
@@ -260,7 +287,7 @@ let controller = (function(budgetCtrl, UICtrl) {
 
     return {
         init: function() {
-            console.log('Application has started...');
+            console.log('Application started successfully...');
 
             // reset data
             UICtrl.displayBudget({
