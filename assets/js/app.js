@@ -103,6 +103,7 @@ let budgetController = (function() {
         getPercentages: function() {
             let percentages;
 
+            // store all the percentages
             percentages = data.allItems.exp.map(current => {
                 return current.gerPercentage();
             });
@@ -266,6 +267,7 @@ let controller = (function(budgetCtrl, UICtrl) {
         // get the field input data
         input = UICtrl.getInput();
 
+        // validate then process the data
         if(input.description && input.value) {
             // add the item to the budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
@@ -282,7 +284,6 @@ let controller = (function(budgetCtrl, UICtrl) {
             // calculate and update percentages
             updatePercentages();
         }
-        else console.log("Validation error!!!");
     };
 
     let ctrlDeleteItem = function(e) {
