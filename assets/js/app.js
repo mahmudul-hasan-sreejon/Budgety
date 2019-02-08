@@ -310,6 +310,10 @@ let UIController = (function() {
             document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
         },
 
+        defaultInputType: function() {
+            document.querySelector(DOMstrings.inputType).value = 'inc';
+        },
+
         getDOMstrings: function() {
             return DOMstrings;
         }
@@ -428,6 +432,8 @@ let controller = (function(budgetCtrl, UICtrl) {
             });
 
             UICtrl.displayMonth();
+
+            UICtrl.defaultInputType();
 
             setupEventListeners();
         }
