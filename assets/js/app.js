@@ -144,6 +144,24 @@ let UIController = (function() {
         expensesPercLabel: '.item__percentage'
     };
 
+    let formatNumber = function(num, type) {
+        let sign;
+
+        num = Math.abs(num);
+
+        // add 2 decimal points
+        num = num.toFixed(2);
+
+        // add comma separators
+        num = num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+        // let numSplit = num.toLocaleString();
+
+        // add + or - sign before num
+        sign = (type === 'exp') ? '-' : '+';
+        
+        return (sign + ' ' + num);
+    };
+
     return {
         getInput: function() {
             return {
@@ -163,7 +181,7 @@ let UIController = (function() {
                 `<div class="item clearfix" id="inc-%id%">
                     <div class="item__description">%description%</div>
                     <div class="right clearfix">
-                        <div class="item__value">+ %value%</div>
+                        <div class="item__value">%value%</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
                         </div>
@@ -176,7 +194,7 @@ let UIController = (function() {
                 `<div class="item clearfix" id="exp-%id%">
                     <div class="item__description">%description%</div>
                     <div class="right clearfix">
-                        <div class="item__value">- %value%</div>
+                        <div class="item__value">%value%</div>
                         <div class="item__percentage">21%</div>
                         <div class="item__delete">
                             <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
@@ -188,7 +206,7 @@ let UIController = (function() {
             // replace id, description and value from the page
             page = page.replace('%id%', obj.id);
             page = page.replace('%description%', obj.description);
-            page = page.replace('%value%', obj.value);
+            page = page.replace('%value%', formatNumber(obj.value, type));
 
             // insert page as the last element
             document.querySelector(element).insertAdjacentHTML('beforeend', page);
@@ -221,10 +239,14 @@ let UIController = (function() {
         },
 
         displayBudget: function(obj) {
+            let type;
+
+            type = obj.budget > 0 ? 'inc' : 'exp';
+
             // update total budget
-            document.querySelector(DOMstrings.budgetLable).textContent = obj.budget;
-            document.querySelector(DOMstrings.incomeLable).textContent = obj.totalInc;
-            document.querySelector(DOMstrings.expensesLable).textContent = obj.totalExp;
+            document.querySelector(DOMstrings.budgetLable).textContent = formatNumber(obj.budget, type);
+            document.querySelector(DOMstrings.incomeLable).textContent = formatNumber(obj.totalInc, 'inc');
+            document.querySelector(DOMstrings.expensesLable).textContent = formatNumber(obj.totalExp, 'exp');
 
             // update object percentage if any
             if(obj.percentage > 0) document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage + "%";
