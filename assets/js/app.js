@@ -295,6 +295,21 @@ let UIController = (function() {
             document.querySelector(DOMstrings.dateLable).textContent = months[month] + ', ' + year;
         },
 
+        changedType: function() {
+            let fields;
+
+            fields = document.querySelectorAll(DOMstrings.inputType + ',' + DOMstrings.inputDescription + ',' + DOMstrings.inputValue);
+
+            // convert `fields` list to an array
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            fieldsArr.forEach((current) => {
+                current.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+        },
+
         getDOMstrings: function() {
             return DOMstrings;
         }
@@ -395,6 +410,9 @@ let controller = (function(budgetCtrl, UICtrl) {
 
         // event listener for deleting items
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+
+        // event listener for input type change
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
     return {
