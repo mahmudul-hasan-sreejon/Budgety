@@ -140,7 +140,8 @@ let UIController = (function() {
         incomeLable: '.budget__income--value',
         expensesLable: '.budget__expenses--value',
         percentageLable: '.budget__expenses--percentage',
-        container: '.container'
+        container: '.container',
+        expensesPercLabel: '.item__percentage'
     };
 
     return {
@@ -220,12 +221,42 @@ let UIController = (function() {
         },
 
         displayBudget: function(obj) {
+            // update total budget
             document.querySelector(DOMstrings.budgetLable).textContent = obj.budget;
             document.querySelector(DOMstrings.incomeLable).textContent = obj.totalInc;
             document.querySelector(DOMstrings.expensesLable).textContent = obj.totalExp;
 
+            // update object percentage if any
             if(obj.percentage > 0) document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage + "%";
             else document.querySelector(DOMstrings.percentageLable).textContent = '---';
+        },
+
+        displayPercentages: function(percentages) {
+            let fields;
+            
+            // select DOMs with 'item__percentage' field
+            fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
+
+            // convert `fields` list to an array
+            fieldsArr = Array.prototype.slice.call(fields);
+
+            fieldsArr.forEach((current, index) => {
+                // update percentage if any
+                if(percentages[index] > 0) current.textContent = percentages[index] + '%';
+                else current.textContent = '---';
+            });
+
+            // convert `fields` node list to an array
+            // let nodeListForEach = function(nodeList, callback) {
+            //     for(let i = 0; i < nodeList.length; ++i) {
+            //         callback(nodeList[i], i);
+            //     }
+            // };
+
+            // nodeListForEach(fields, (current, index) => {
+            //     if(percentages[index] > 0) current.textContent = percentages[index] + '%';
+            //     else current.textContent = '---';
+            // });
         },
 
         getDOMstrings: function() {
@@ -259,6 +290,7 @@ let controller = (function(budgetCtrl, UICtrl) {
         let percentages = budgetCtrl.getPercentages();
 
         // update percentages from budget and UI
+        UICtrl.displayPercentages(percentages);
     };
 
     let ctrtAddItem = function() {
