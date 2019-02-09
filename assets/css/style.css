@@ -37,6 +37,7 @@ body {
     background-size: cover;
     background-position: center;
     position: relative;
+    overflow: hidden;
 }
 
 .budget {
@@ -199,7 +200,7 @@ h2 {
     margin-bottom: 15px;
 }
 
-.icome__title { color: #28B9B5; }
+.income__title { color: #28B9B5; }
 .expenses__title { color: #FF5049; }
 
 .item {
@@ -270,9 +271,7 @@ h2 {
     background-color: #FFDAD9 !important;
     cursor: pointer;
     color: #FF5049;
-
 }
 
 .unpaid .item__percentage { box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1); }
 .unpaid:hover .item__description { font-weight: 900; }
-
