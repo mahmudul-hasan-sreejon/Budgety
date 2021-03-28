@@ -22,7 +22,7 @@ let budgetController = (function() {
 		this.value = value;
 	}
 
-	let calculateTotal = function(type) {
+	const calculateTotal = function(type) {
 		let sum = 0;
 		data.allItems[type].forEach((element) => {
 			sum += element.value;
@@ -47,13 +47,13 @@ let budgetController = (function() {
 
 	return {
 		addItem: function(type, description, value) {
-			let newItem, id;
-
 			// generate transaction id
+			let id;
 			if (data.allItems[type].length === 0) id = 0;
 			else id = data.allItems[type][data.allItems[type].length - 1].id + 1;
 
 			// create new transaction
+			let newItem;
 			if (type === 'exp') newItem = new Expense(id, description, value);
 			else if (type === 'inc') newItem = new Income(id, description, value);
 
@@ -64,10 +64,8 @@ let budgetController = (function() {
 		},
 
 		deleteItem: function(type, id) {
-			let index;
-
 			// find the index of the delete item from data storage
-			index = -1;
+			let index = -1;
 			for (let i = 0; i < data.allItems[type].length; ++i) {
 				if (data.allItems[type][i].id === id) {
 					index = i;
@@ -99,10 +97,8 @@ let budgetController = (function() {
 		},
 
 		getPercentages: function() {
-			let percentages;
-
 			// store all the percentages
-			percentages = data.allItems.exp.map((current) => {
+			let percentages = data.allItems.exp.map((current) => {
 				return current.gerPercentage();
 			});
 
@@ -123,7 +119,7 @@ let budgetController = (function() {
 // UI Controller
 let UIController = (function() {
 	// storage for class / id names
-	let DOMstrings = {
+	const DOMstrings = {
 		inputType: '.add__type',
 		inputDescription: '.add__description',
 		inputValue: '.add__value',
@@ -139,9 +135,7 @@ let UIController = (function() {
 		dateLable: '.budget__title--month'
 	};
 
-	let formatNumber = function(num, type) {
-		let sign;
-
+	const formatNumber = function(num, type) {
 		num = Math.abs(num);
 
 		// add 2 decimal points
@@ -152,7 +146,7 @@ let UIController = (function() {
 		// let numSplit = num.toLocaleString();
 
 		// add + or - sign before num
-		sign = type === 'exp' ? '-' : '+';
+		const sign = type === 'exp' ? '-' : '+';
 
 		return sign + ' ' + num;
 	};
@@ -167,9 +161,8 @@ let UIController = (function() {
 		},
 
 		addListItem: function(obj, type) {
-			let page, element;
-
 			// prepare page html for render
+			let page, element;
 			if (type === 'inc') {
 				element = DOMstrings.incomeContainer;
 				page = `<div class="item clearfix" id="inc-%id%">
@@ -205,21 +198,17 @@ let UIController = (function() {
 		},
 
 		deleteListItem: function(selectorId) {
-			let element;
-
 			// remove the child element
-			element = document.getElementById(selectorId);
+			let element = document.getElementById(selectorId);
 			element.parentNode.removeChild(element);
 		},
 
 		clearFields: function() {
-			let fields, fieldsArr;
-
 			// select DOM of input description and value field
-			fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
+			const fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputValue);
 
 			// convert `fields` list to an array
-			fieldsArr = Array.prototype.slice.call(fields);
+			let fieldsArr = Array.prototype.slice.call(fields);
 
 			// clear every input fields
 			fieldsArr.forEach((element) => {
@@ -231,9 +220,7 @@ let UIController = (function() {
 		},
 
 		displayBudget: function(obj) {
-			let type;
-
-			type = obj.budget > 0 ? 'inc' : 'exp';
+			const type = obj.budget > 0 ? 'inc' : 'exp';
 
 			// update total budget
 			document.querySelector(DOMstrings.budgetLable).textContent = formatNumber(obj.budget, type);
@@ -241,24 +228,26 @@ let UIController = (function() {
 			document.querySelector(DOMstrings.expensesLable).textContent = formatNumber(obj.totalExp, 'exp');
 
 			// update object percentage if any
-			if (obj.percentage > 0)
+			if (obj.percentage > 0) {
 				document.querySelector(DOMstrings.percentageLable).textContent = obj.percentage + '%';
-			else document.querySelector(DOMstrings.percentageLable).textContent = '---';
+			} else {
+				document.querySelector(DOMstrings.percentageLable).textContent = '---';
+			}
 		},
 
 		displayPercentages: function(percentages) {
-			let fields;
-
 			// select DOMs with 'item__percentage' field
-			fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
+			const fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
 			// convert `fields` list to an array
-			fieldsArr = Array.prototype.slice.call(fields);
+			let fieldsArr = Array.prototype.slice.call(fields);
 
+			// update percentage if any
 			fieldsArr.forEach((current, index) => {
-				// update percentage if any
-				if (percentages[index] > 0) current.textContent = percentages[index] + '%';
-				else current.textContent = '---';
+				current.textContent = percentages[index] > 0 ? percentages[index] + '%' : '---';
+
+				// if (percentages[index] > 0) current.textContent = percentages[index] + '%';
+				// else current.textContent = '---';
 			});
 
 			// convert `fields` node list to an array
@@ -275,11 +264,8 @@ let UIController = (function() {
 		},
 
 		displayMonth: function() {
-			let now, month, months, year;
-
-			now = new Date();
-
-			months = [
+			const now = new Date();
+			const months = [
 				'January',
 				'February',
 				'March',
@@ -293,22 +279,19 @@ let UIController = (function() {
 				'November',
 				'December'
 			];
-			month = now.getMonth();
-
-			year = now.getFullYear();
+			const month = now.getMonth();
+			const year = now.getFullYear();
 
 			document.querySelector(DOMstrings.dateLable).textContent = months[month] + ', ' + year;
 		},
 
 		changedType: function() {
-			let fields;
-
-			fields = document.querySelectorAll(
+			const fields = document.querySelectorAll(
 				DOMstrings.inputType + ',' + DOMstrings.inputDescription + ',' + DOMstrings.inputValue
 			);
 
 			// convert `fields` list to an array
-			fieldsArr = Array.prototype.slice.call(fields);
+			let fieldsArr = Array.prototype.slice.call(fields);
 
 			fieldsArr.forEach((current) => {
 				current.classList.toggle('red-focus');
@@ -328,39 +311,35 @@ let UIController = (function() {
 })();
 
 // Global App Controller
-let controller = (function(budgetCtrl, UICtrl) {
-	let updateBudget = function() {
+const controller = (function(budgetCtrl, UICtrl) {
+	const updateBudget = function() {
 		// calculate the budget
 		budgetCtrl.calculateBudget();
 
 		// return the budget
-		let budget = budgetCtrl.getBudget();
+		const budget = budgetCtrl.getBudget();
 
 		// display the budget on the UI
 		UICtrl.displayBudget(budget);
 	};
 
-	let updatePercentages = function() {
+	const updatePercentages = function() {
 		// calculate percentages
 		budgetCtrl.calculatePercentages();
 
 		// read percentages from budget controller
-		let percentages = budgetCtrl.getPercentages();
+		const percentages = budgetCtrl.getPercentages();
 
 		// update percentages from budget and UI
 		UICtrl.displayPercentages(percentages);
 	};
 
-	let ctrtAddItem = function() {
-		let input, newItem;
-
-		// get the field input data
-		input = UICtrl.getInput();
-
+	const ctrtAddItem = function() {
 		// validate then process the data
+		const input = UICtrl.getInput();
 		if (input.description && input.value) {
 			// add the item to the budget controller
-			newItem = budgetCtrl.addItem(input.type, input.description, input.value);
+			const newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
 			// add the item to the UI
 			UICtrl.addListItem(newItem, input.type);
@@ -376,18 +355,14 @@ let controller = (function(budgetCtrl, UICtrl) {
 		}
 	};
 
-	let ctrlDeleteItem = function(e) {
-		let itemId, type, id, temp;
-
+	const ctrlDeleteItem = function(e) {
 		// find target element's parent element
-		itemId = e.target.parentNode.parentNode.parentNode.id;
-
+		const itemId = e.target.parentNode.parentNode.parentNode.id;
 		if (itemId) {
 			// split element name into sub string
-			temp = itemId.split('-');
-
-			type = temp[0];
-			id = parseInt(temp[1]);
+			let temp = itemId.split('-');
+			const type = temp[0];
+			const id = parseInt(temp[1]);
 
 			// delete the item from data storage
 			budgetCtrl.deleteItem(type, id);
@@ -403,12 +378,12 @@ let controller = (function(budgetCtrl, UICtrl) {
 		}
 	};
 
-	let setupEventListeners = function() {
-		let DOM = UICtrl.getDOMstrings();
+	const setupEventListeners = function() {
+		const DOM = UICtrl.getDOMstrings();
 
 		// event listener for adding items
 		document.addEventListener('keypress', function(e) {
-			if (e.keyCode === 13 || e.which === 13) {
+			if (e.code === 'Enter' || e.code === 'NumpadEnter') {
 				ctrtAddItem();
 			}
 		});
