@@ -165,27 +165,37 @@ let UIController = (function() {
 			let page, element;
 			if (type === 'inc') {
 				element = DOMstrings.incomeContainer;
-				page = `<div class="item clearfix" id="inc-%id%">
-                    <div class="item__description">%description%</div>
-                    <div class="right clearfix">
-                        <div class="item__value">%value%</div>
-                        <div class="item__delete">
-                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+				page = `
+                    <div class="item clearfix" id="inc-%id%">
+                        <div class="item__description">%description%</div>
+
+                        <div class="right clearfix">
+                            <div class="item__value">%value%</div>
+                            <div class="item__delete">
+                                <button class="item__delete--btn">
+                                    <i class="ion-ios-close-outline"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>`;
+                `;
 			} else if (type === 'exp') {
 				element = DOMstrings.expensesContainer;
-				page = `<div class="item clearfix" id="exp-%id%">
-                    <div class="item__description">%description%</div>
-                    <div class="right clearfix">
-                        <div class="item__value">%value%</div>
-                        <div class="item__percentage">21%</div>
-                        <div class="item__delete">
-                            <button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button>
+				page = `
+                    <div class="item clearfix" id="exp-%id%">
+                        <div class="item__description">%description%</div>
+
+                        <div class="right clearfix">
+                            <div class="item__value">%value%</div>
+                            <div class="item__percentage">21%</div>
+                            <div class="item__delete">
+                                <button class="item__delete--btn">
+                                    <i class="ion-ios-close-outline"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>`;
+                `;
 			}
 
 			// replace id, description and value from the page
@@ -245,22 +255,7 @@ let UIController = (function() {
 			// update percentage if any
 			fieldsArr.forEach((current, index) => {
 				current.textContent = percentages[index] > 0 ? percentages[index] + '%' : '---';
-
-				// if (percentages[index] > 0) current.textContent = percentages[index] + '%';
-				// else current.textContent = '---';
 			});
-
-			// convert `fields` node list to an array
-			// let nodeListForEach = function(nodeList, callback) {
-			//     for(let i = 0; i < nodeList.length; ++i) {
-			//         callback(nodeList[i], i);
-			//     }
-			// };
-
-			// nodeListForEach(fields, (current, index) => {
-			//     if(percentages[index] > 0) current.textContent = percentages[index] + '%';
-			//     else current.textContent = '---';
-			// });
 		},
 
 		displayMonth: function() {
