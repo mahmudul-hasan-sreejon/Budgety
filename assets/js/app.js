@@ -357,7 +357,7 @@ const controller = (function(budgetCtrl, UICtrl) {
 
 	const ctrlDeleteItem = function(e) {
 		// find target element's parent element
-		const itemId = e.target.parentNode.parentNode.parentNode.id;
+		const itemId = e.target.parentNode.parentNode.parentNode.parentNode.id;
 		if (itemId) {
 			// split element name into sub string
 			let temp = itemId.split('-');
